@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173f32">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Videos de Cocina Sanborns</title>
+<style>
+:root{--green:#173f32;--green2:#285b48;--cream:#f6f4ed;--ink:#1f2a25;--muted:#68756e;--line:#dce3dc;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:var(--green);color:#fff;padding:22px 18px 26px;border-radius:0 0 22px 22px}
+.brand{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;font-weight:700}
+h1{font-size:25px;line-height:1.12;margin:8px 0 8px}
+header p{margin:0;color:#dce9e1;font-size:14px}
+main{max-width:850px;margin:auto;padding:16px}
+.search{display:flex;gap:8px;margin-top:-2px}
+input,select,button{font:inherit}
+#search{width:100%;border:1px solid var(--line);border-radius:13px;padding:14px;background:#fff;outline-color:var(--green2)}
+.filters{display:flex;gap:8px;overflow:auto;padding:14px 0 10px}
+.chip{border:1px solid var(--line);border-radius:999px;background:#fff;padding:9px 13px;white-space:nowrap;color:var(--ink);cursor:pointer}
+.chip.active{background:var(--green);border-color:var(--green);color:#fff}
+.notice{background:#fff8e6;border:1px solid #ead7a4;border-radius:14px;padding:13px 14px;margin:8px 0 18px;font-size:13px}
+.notice strong{display:block;margin-bottom:4px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:18px 0 12px}
+h2{font-size:18px;margin:0}
+.small{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.thumb{height:124px;background:linear-gradient(135deg,#244e3e,#78917c);display:flex;align-items:center;justify-content:center;color:white}
+.thumb span{font-size:36px}
+.card-body{padding:14px}
+.tag{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--green2);font-weight:800}
+.card h3{font-size:16px;margin:7px 0}
+.card p{font-size:13px;color:var(--muted);margin:0 0 12px;line-height:1.4}
+.play,.secondary{border:0;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:700}
+.play{background:var(--green);color:white;width:100%}
+.secondary{background:#e8eee9;color:var(--green)}
+footer{padding:25px 0 10px;text-align:center;color:var(--muted);font-size:12px}
+.empty{padding:25px;background:#fff;border:1px dashed var(--line);border-radius:14px;color:var(--muted);text-align:center}
+dialog{border:0;border-radius:18px;width:min(94vw,650px);padding:0;box-shadow:0 20px 60px #0003}
+dialog::backdrop{background:#101a16b3}
+.modal-head{padding:16px 18px;background:var(--green);color:white;display:flex;justify-content:space-between;gap:12px}
+.modal-head h2{font-size:17px}
+.close{border:0;background:transparent;color:white;font-size:24px;cursor:pointer}
+.modal-content{padding:18px}
+.video-placeholder{background:#111;color:#fff;aspect-ratio:16/9;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px}
+.video-placeholder b{font-size:40px}
+.warning-list{padding-left:20px;line-height:1.55;font-size:14px}
+.modal-actions{display:flex;gap:8px;margin-top:16px}
+.modal-actions button{flex:1}
+@media(min-width:650px){header{padding:28px max(24px,calc((100vw - 810px)/2)) 30px}h1{font-size:30px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Biblioteca de capacitación</div>
+  <h1>Videos de Cocina Sanborns</h1>
+  <p>Consulta rápida de platillos, preparaciones e higiene.</p>
+</header>
+<main>
+  <div class="search"><input id="search" type="search" placeholder="Buscar: bacalao, enchiladas, sanitización…" aria-label="Buscar videos"></div>
+  <div class="filters" id="filters"></div>
+  <div class="notice"><strong>Antes de comenzar</strong>Aplica siempre los procedimientos autorizados de higiene, conservación, temperaturas y seguridad. Estos avisos refuerzan la capacitación; no sustituyen los procedimientos vigentes.</div>
+  <div class="section-head"><h2 id="listTitle">Videos disponibles</h2><span class="small" id="count"></span></div>
+  <div class="grid" id="videoGrid"></div>
+  <footer>Versión inicial de prueba · Los videos reales se conectarán al publicar la aplicación.</footer>
+</main>
+<dialog id="player">
+  <div class="modal-head"><h2 id="modalTitle">Video</h2><button class="close" id="closeModal" aria-label="Cerrar">×</button></div>
+  <div class="modal-content">
+    <div id="warningView">
+      <strong>Recordatorio de higiene y seguridad</strong>
+      <ul class="warning-list" id="warningList">
+        <li>Lávate las manos y mantén el área de trabajo limpia.</li>
+        <li>Verifica identificación, etiquetado y conservación del producto.</li>
+        <li>Confirma las temperaturas y el procedimiento autorizado para este producto.</li>
+      </ul>
+      <div class="modal-actions"><button class="play" id="continueVideo">Continuar al video</button></div>
+    </div>
+    <div id="videoView" hidden>
+      <div id="videoContainer" class="video-placeholder"><b>▶</b><span>Espacio reservado para el reproductor del video real.</span></div>
+      <p class="small" id="videoHelp">Este prototipo todavía no está conectado a los archivos de video.</p>
+      <div class="modal-actions"><button class="secondary" id="backWarnings">Ver recordatorio</button><button class="play" id="doneVideo">Cerrar video</button></div>
+    </div>
+  </div>
+</dialog>
+<script>
+const categories = ["Todos","Platillos y emplatados","Procesos de preparación","Higiene y sanitización","Temperaturas y conservación","Limpieza y seguridad"];
+const videos = [
+ {id:1,title:"Enchiladas Tarascas",category:"Platillos y emplatados",duration:"1:10",keywords:"enchiladas tacos res guisada salsa tarasca emplatado",description:"Referencia de montaje y complementos del platillo.",url:""},
+ {id:2,title:"Guisado de Santo Bailando",category:"Platillos y emplatados",duration:"1:01",keywords:"guisado pierna muslo cerdo ejotes arroz hierbabuena",description:"Referencia de porcionado y presentación.",url:""},
+ {id:3,title:"Tlacoyo enchilado relleno con frijol",category:"Platillos y emplatados",duration:"1:21",keywords:"tlacoyo frijol salsa verde guacamole filete res cilantro rábano",description:"Referencia de componentes y montaje.",url:""},
+ {id:4,title:"Bacalao a la Vizcaína",category:"Procesos de preparación",duration:"1:45",keywords:"bacalao vizcaina aceituna alcaparras bolsa horno",description:"Referencia de preparación y proceso térmico; validar parámetros con el procedimiento vigente.",url:""},
+ {id:5,title:"Proceso de desalado del bacalao",category:"Procesos de preparación",duration:"1:34",keywords:"bacalao desalado agua refrigeracion lonja piel espinas",description:"Referencia del proceso de desalado y preparación previa.",url:""}
+];
+let activeCategory = "Todos", selectedVideo = null;
+const filters = document.getElementById("filters"), grid = document.getElementById("videoGrid"), search = document.getElementById("search");
+function renderFilters(){
+ filters.innerHTML="";
+ categories.forEach(cat=>{const b=document.createElement("button");b.className="chip"+(cat===activeCategory?" active":"");b.textContent=cat;b.onclick=()=>{activeCategory=cat;renderFilters();renderVideos()};filters.appendChild(b)});
+}
+function renderVideos(){
+ const q=search.value.trim().toLowerCase();
+ const found=videos.filter(v=>(activeCategory==="Todos"||v.category===activeCategory)&&(!q||(v.title+" "+v.category+" "+v.keywords+" "+v.description).toLowerCase().includes(q)));
+ document.getElementById("count").textContent=found.length+" video"+(found.length===1?"":"s");
+ grid.innerHTML="";
+ if(!found.length){grid.innerHTML='<div class="empty">No encontramos videos con esa búsqueda. Prueba con otro término o elige “Todos”.</div>';return}
+ found.forEach(v=>{
+  const card=document.createElement("article");card.className="card";
+  card.innerHTML=`<div class="thumb"><span>▶</span></div><div class="card-body"><div class="tag">${v.category}</div><h3>${v.title}</h3><p>${v.description}</p><div class="small" style="margin-bottom:12px">Duración de referencia: ${v.duration}</div><button class="play">Ver recordatorio y video</button></div>`;
+  card.querySelector("button").onclick=()=>openVideo(v);grid.appendChild(card);
+ });
+}
+function openVideo(v){selectedVideo=v;document.getElementById("modalTitle").textContent=v.title;document.getElementById("warningView").hidden=false;document.getElementById("videoView").hidden=true;document.getElementById("player").showModal()}
+document.getElementById("continueVideo").onclick=()=>{
+ document.getElementById("warningView").hidden=true;document.getElementById("videoView").hidden=false;
+ const c=document.getElementById("videoContainer");
+ if(selectedVideo && selectedVideo.url){
+   c.className="";c.innerHTML="";
+   const iframe=document.createElement("iframe");iframe.src=selectedVideo.url;iframe.title=selectedVideo.title;iframe.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";iframe.allowFullscreen=true;iframe.style="width:100%;aspect-ratio:16/9;border:0;border-radius:12px";c.appendChild(iframe);
+   document.getElementById("videoHelp").textContent="Reproductor conectado al enlace configurado para este video.";
+ } else {
+   c.className="video-placeholder";c.innerHTML="<b>▶</b><span>Espacio reservado para el reproductor del video real.</span>";
+   document.getElementById("videoHelp").textContent="Este prototipo todavía no está conectado a los archivos de video.";
+ }
+};
+document.getElementById("backWarnings").onclick=()=>{document.getElementById("videoView").hidden=true;document.getElementById("warningView").hidden=false};
+document.getElementById("doneVideo").onclick=()=>document.getElementById("player").close();
+document.getElementById("closeModal").onclick=()=>document.getElementById("player").close();
+document.getElementById("player").addEventListener("click",e=>{if(e.target.id==="player")e.target.close()});
+search.addEventListener("input",renderVideos);
+renderFilters();renderVideos();
+if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "Videos de Cocina Sanborns",
+  "short_name": "Videos Cocina",
+  "description": "Biblioteca de consulta rápida de videos de cocina.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f4ed",
+  "theme_color": "#173f32",
+  "icons": []
+}

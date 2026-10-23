@@ -1,0 +1,16 @@
+VIDEOS DE COCINA SANBORNS — PROTOTIPO INICIAL
+
+Qué incluye:
+- Búsqueda y filtros por categoría.
+- Cinco fichas iniciales de video.
+- Aviso previo de higiene y seguridad antes de mostrar el espacio de reproducción.
+- Diseño adaptable a Android.
+- Archivos base para instalar como PWA cuando se publique por HTTPS.
+
+Importante:
+- Los videos reales todavía NO están incorporados.
+- Esta versión NO tiene panel de administración real, base de datos ni autenticación.
+- No uses GitHub Pages para subir videos internos/sensibles sin revisar la política de acceso: el sitio publicado es público.
+- La administración multiusuario requiere un backend y autenticación (por ejemplo, Supabase Auth) o un servicio equivalente.
+- Para conectar cada video, se debe editar el arreglo `videos` en index.html y colocar el enlace de inserción/reproducción en el campo `url` de cada registro. El enlace debe ser compatible con iframe.
+- Los avisos deben revisarse contra los procedimientos vigentes y aprobados antes de publicar.
